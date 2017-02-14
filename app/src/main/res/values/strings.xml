@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GenericInternetReciever</string>
+    <string name="dialog_check_internet">Internet is disabled</string>
+    <string name="ok">OK</string>
+    <string name="sometext">Some Text</string>
+    <string name="activityA">Goto A-></string>
+</resources>
