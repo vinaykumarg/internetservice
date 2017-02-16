@@ -1,6 +1,5 @@
 package com.example.vinayg.genericinternetreciever;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,41 +9,32 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
 public class MyReceiver extends BroadcastReceiver {
     private static final String TAG = MyReceiver.class.getName();
     ActivityManager activityManager;
 
-    public MyReceiver() {
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("MyReceiver","onReceive");
-        Toast.makeText(context,"recieved",Toast.LENGTH_SHORT).show();
-        ActivityManager.AppTask task = null;
-        boolean isActive = GenericInternetReciever.isActivityVisible();
+        Myapp Reciever = (Myapp)context.getApplicationContext();
+        if(isNetworkAvailable(context)) {
+            Reciever.iDontKnow();
+            Intent i = new Intent("FINISH");
+            context.sendBroadcast(i);
+
+        }
+        boolean isActive = Reciever.isActivityVisible();
         try {
                     if(!isActive) {
                         if (!isNetworkAvailable(context)) {
-                            activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                                task = activityManager.getAppTasks().get(0);
-                                Intent i = task.getTaskInfo().baseIntent;
-                                i.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(i);
-                                Log.d("MyReceiver", "started");
-                                Toast.makeText(context, "started", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "else", Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(context, context.getString(R.string.dialog_check_internet), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.d(TAG,"else");
-                        Activity activity = GenericInternetReciever.GetCurrentActivity();
-                        Intent refresh = new Intent(activity.getClass().getName());
-                        context.sendBroadcast(refresh);
+                        Log.d(TAG,"else "+Reciever.doIknow());
+                        if(!isNetworkAvailable(context)&&!Reciever.doIknow()) {
+                            Intent dialogIntent = new Intent(context, DialogActivity.class);
+                            context.startActivity(dialogIntent);
+                        }
 
                     }
         } catch (Exception e) {
